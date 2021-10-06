@@ -6,6 +6,7 @@ import User from "./user";
 import GroupList from "./groupList";
 import api from "../api";
 import SearchStatus from "./searchStatus";
+import _ from "lodash";
 
 const Users = ({ users: allUsers, ...rest }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -26,9 +27,8 @@ const Users = ({ users: allUsers, ...rest }) => {
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
-    console.log("ALL USR", allUsers);
     const filteredUsers = selectedProf
-        ? allUsers.filter((user) => user.profession.name === selectedProf.name)
+        ? allUsers.filter((user) => _.isEqual(user.profession, selectedProf))
         : allUsers;
 
     const count = filteredUsers.length;
