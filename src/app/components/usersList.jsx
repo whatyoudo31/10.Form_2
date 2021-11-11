@@ -14,10 +14,11 @@ const UsersList = () => {
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
-    const [searchUsers, setSearchUsers] = useState();
+    const [searchUsers, setSearchUsers] = useState("");
     const pageSize = 8;
 
     const handleSeacrh = (value) => {
+        setSelectedProf(undefined);
         setSearchUsers(value);
     };
 
@@ -101,7 +102,7 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
-                    <SearcBar onSearch={handleSeacrh} />
+                    <SearcBar onSearch={handleSeacrh} search={searchUsers} />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}

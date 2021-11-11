@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-const SearchBar = ({ onSearch }) => {
-    const [searchValue, setSearcValue] = useState("");
-    onSearch(searchValue);
+const SearchBar = ({ onSearch, search }) => {
     return (
         <div className="form-outline">
             <input
@@ -12,14 +10,16 @@ const SearchBar = ({ onSearch }) => {
                 className="form-control"
                 placeholder="Найти того, кто тусанет"
                 aria-label="Search"
-                onChange={(evt) => setSearcValue(evt.target.value)}
+                value={search}
+                onChange={(evt) => onSearch(evt.target.value)}
             />
         </div>
     );
 };
 
 SearchBar.propTypes = {
-    onSearch: PropTypes.func
+    onSearch: PropTypes.func,
+    search: PropTypes.string
 };
 
 export default SearchBar;
