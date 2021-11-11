@@ -7,13 +7,19 @@ import api from "../api";
 import SearchStatus from "./searchStatus";
 import _ from "lodash";
 import UserTable from "./usersTable";
+import SearcBar from "./searchBar";
 
-const Users = () => {
+const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+    const [searchUsers, setSearchUsers] = useState();
     const pageSize = 8;
+
+    const handleSeacrh = (value) => {
+        setSearchUsers(value);
+    };
 
     const [users, setUsers] = useState();
     useEffect(() => {
@@ -42,6 +48,7 @@ const Users = () => {
     }, [selectedProf]);
 
     const handleProfessionSelect = (item) => {
+        setSearchUsers("");
         setSelectedProf(item);
     };
     const handlePageChange = (pageIndex) => {
@@ -53,7 +60,13 @@ const Users = () => {
     };
 
     if (users) {
-        const filteredUsers = selectedProf
+        const filteredUsers = searchUsers
+            ? users.filter((user) => {
+                  return user.name
+                      .toLowerCase()
+                      .includes(searchUsers.toLowerCase());
+              })
+            : selectedProf
             ? users.filter((user) => _.isEqual(user.profession, selectedProf))
             : users;
 
@@ -63,6 +76,7 @@ const Users = () => {
             [sortBy.path],
             [sortBy.order]
         );
+
         const usersCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
             setSelectedProf();
@@ -87,6 +101,7 @@ const Users = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <SearcBar onSearch={handleSeacrh} />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
@@ -110,8 +125,8 @@ const Users = () => {
     }
     return "loading...";
 };
-Users.propTypes = {
+UsersList.propTypes = {
     users: PropTypes.array
 };
 
-export default Users;
+export default UsersList;
