@@ -1,9 +1,10 @@
 import React from "react";
-import NavBar from "./components/navBar";
 import { Switch, Route } from "react-router-dom";
+
 import Main from "./layouts/main";
 import Login from "./layouts/login";
 import Users from "./layouts/users";
+import NavBar from "./components/ui/navBar";
 
 function App() {
     return (

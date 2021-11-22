@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { paginate } from "../utils/paginate";
-import Pagination from "./pagination";
-import GroupList from "./groupList";
-import api from "../api";
-import SearchStatus from "./searchStatus";
+import { paginate } from "../../../utils/paginate";
+import Pagination from "../../common/groupList.jsx";
+import GroupList from "../../common/groupList";
+import api from "../../../api";
+import SearchStatus from "../../ui/searchStatus";
 import _ from "lodash";
-import UserTable from "./usersTable";
-import SearcBar from "./searchBar";
+import UserTable from "../../ui/usersTable";
+import SearcBar from "../../common/searchBar";
 
-const UsersList = () => {
+const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
@@ -26,6 +26,7 @@ const UsersList = () => {
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
+
     const handleDelete = (userId) => {
         setUsers(users.filter((user) => user._id !== userId));
     };
@@ -39,7 +40,6 @@ const UsersList = () => {
             })
         );
     };
-
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data));
     }, []);
@@ -83,6 +83,7 @@ const UsersList = () => {
             setSelectedProf();
         };
 
+        console.log("professionsprofessions", professions);
         return (
             <div className="d-flex">
                 {professions && (
@@ -126,8 +127,8 @@ const UsersList = () => {
     }
     return "loading...";
 };
-UsersList.propTypes = {
+UsersListPage.propTypes = {
     users: PropTypes.array
 };
 
-export default UsersList;
+export default UsersListPage;
