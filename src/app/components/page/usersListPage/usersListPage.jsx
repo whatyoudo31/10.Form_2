@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { paginate } from "../../../utils/paginate";
-import Pagination from "../../common/groupList.jsx";
+import Pagination from "../../common/pagination";
 import GroupList from "../../common/groupList";
 import api from "../../../api";
 import SearchStatus from "../../ui/searchStatus";
