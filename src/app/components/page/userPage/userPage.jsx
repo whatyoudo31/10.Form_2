@@ -12,13 +12,18 @@ const UserPage = ({ userId, edit }) => {
         api.users.getById(userId).then((data) => setUser(data));
     }, []);
 
-    const handleClick = () => {
-        localStorage.setItem("user", JSON.stringify(user));
+    const handleChange = (data) => {
+        console.log("data", data);
+        // setUser(data);
     };
 
     if (user) {
         return edit ? (
-            <UserPageEdit edit={edit} />
+            <UserPageEdit
+                userId={userId}
+                user={user}
+                userChange={handleChange}
+            />
         ) : (
             <div>
                 <h1>{user.name}</h1>
@@ -28,12 +33,7 @@ const UserPage = ({ userId, edit }) => {
                 <b>Оценка: {user.rate}</b>
                 <p>
                     <Link to={`${userId}/edit`}>
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleClick}
-                        >
-                            Изменить
-                        </button>
+                        <button className="btn btn-primary">Изменить</button>
                     </Link>
                 </p>
             </div>

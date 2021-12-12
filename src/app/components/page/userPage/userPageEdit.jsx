@@ -7,25 +7,21 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 
-const UserPageEdit = ({ userId }) => {
+const UserPageEdit = ({ userId, user }) => {
+    // const user = JSON.parse(localStorage.getItem("user"));
+
+    const history = useHistory();
+    const [qualities, setQualities] = useState({});
+    const [professions, setProfessions] = useState();
     const [data, setData] = useState({
         name: "",
         email: "",
 
         profession: "",
-        sex: "male",
-        qualities: []
+        sex: "",
+        qualities: ""
     });
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log("1111 user", user);
-
-    const history = useHistory();
-    const [qualities, setQualities] = useState({});
-    const [professions, setProfessions] = useState();
-    // const [user, setUser] = useState();
     useEffect(() => {
-        // api.users.getById(userId).then((data) => setUser(data));
         api.professions.fetchAll().then((data) => setProfessions(data));
         api.qualities.fetchAll().then((data) => setQualities(data));
         setData({
@@ -37,25 +33,15 @@ const UserPageEdit = ({ userId }) => {
             qualities: user.qualities
         });
     }, []);
-
     const handleSubmit = (evt) => {
         evt.preventDefault();
         // const isValid = validate();
         // if (!isValid) return;
-        localStorage.setItem("user", JSON.stringify(data));
-        history.replace("/");
-        setData({
-            name: "",
-            email: "",
-
-            profession: "",
-            sex: "male",
-            qualities: []
-        });
+        history.push(`/users/${userId}/`);
+        api.users.update(userId, data);
     };
 
     const handleChange = (target) => {
-        console.log("target", target);
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
@@ -131,5 +117,6 @@ const UserPageEdit = ({ userId }) => {
 export default UserPageEdit;
 
 UserPageEdit.propTypes = {
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    user: PropTypes.object
 };

@@ -83,7 +83,6 @@ const UsersListPage = () => {
             setSelectedProf();
         };
 
-        console.log("professionsprofessions", professions);
         return (
             <div className="d-flex">
                 {professions && (
