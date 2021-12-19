@@ -7,9 +7,13 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 
-const UserPageEdit = ({ userId, user }) => {
+const UserPageEdit = ({ userId }) => {
     // const user = JSON.parse(localStorage.getItem("user"));
-
+    const [user, setUser] = useState();
+    useEffect(() => {
+        api.users.getById(userId).then((data) => setUser(data));
+    }, []);
+    console.log("UserPageEdit user", user);
     const history = useHistory();
     const [qualities, setQualities] = useState({});
     const [professions, setProfessions] = useState();
@@ -37,8 +41,15 @@ const UserPageEdit = ({ userId, user }) => {
         evt.preventDefault();
         // const isValid = validate();
         // if (!isValid) return;
-        history.push(`/users/${userId}/`);
-        api.users.update(userId, data);
+
+        const formatArray = data.qualities.map((q) => ({
+            _id: q.value,
+            name: q.label,
+            color: "success"
+        }));
+
+        api.users.update(userId, { ...data, qualities: formatArray });
+        history.push(`/users/`);
     };
 
     const handleChange = (target) => {
@@ -48,7 +59,7 @@ const UserPageEdit = ({ userId, user }) => {
         }));
     };
 
-    if (professions) {
+    if (user) {
         return (
             <>
                 <div className="container mt-5">

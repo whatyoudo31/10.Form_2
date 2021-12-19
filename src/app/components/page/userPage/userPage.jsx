@@ -1,30 +1,19 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import api from "../../../api";
+
 import QualitiesList from "../../ui/qualities/";
 import { Link } from "react-router-dom";
-import UserPageEdit from "./userPageEdit";
 
-const UserPage = ({ userId, edit }) => {
+const UserPage = ({ userId }) => {
     // const history = useHistory();
     const [user, setUser] = useState();
     useEffect(() => {
         api.users.getById(userId).then((data) => setUser(data));
     }, []);
-
-    const handleChange = (data) => {
-        console.log("data", data);
-        // setUser(data);
-    };
-
+    console.log("UserPage user", user);
     if (user) {
-        return edit ? (
-            <UserPageEdit
-                userId={userId}
-                user={user}
-                userChange={handleChange}
-            />
-        ) : (
+        return (
             <div>
                 <h1>{user.name}</h1>
                 <h2>Профессия: {user.profession.name}</h2>
@@ -46,5 +35,6 @@ export default UserPage;
 
 UserPage.propTypes = {
     userId: PropTypes.string,
+    user: PropTypes.object,
     edit: PropTypes.string
 };
