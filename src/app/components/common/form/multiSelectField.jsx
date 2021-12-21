@@ -16,10 +16,13 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
     };
 
     const defaultValueToArray =
-        defaultValue.map((item) => ({
-            value: item._id,
-            label: item.name
-        })) || [];
+        (Array.isArray(defaultValue) &&
+            defaultValue.map((item) => ({
+                label: item.name,
+                value: item._id,
+                color: item.color
+            }))) ||
+        [];
 
     return (
         <div className="mb-4">

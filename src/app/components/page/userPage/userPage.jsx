@@ -11,7 +11,6 @@ const UserPage = ({ userId }) => {
     useEffect(() => {
         api.users.getById(userId).then((data) => setUser(data));
     }, []);
-    console.log("UserPage user", user);
     if (user) {
         return (
             <div>

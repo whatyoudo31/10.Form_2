@@ -6,60 +6,94 @@ import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
+import * as yup from "yup";
 
 const UserPageEdit = ({ userId }) => {
-    // const user = JSON.parse(localStorage.getItem("user"));
-    const [user, setUser] = useState();
-    useEffect(() => {
-        api.users.getById(userId).then((data) => setUser(data));
-    }, []);
-    console.log("UserPageEdit user", user);
     const history = useHistory();
+    const [errors, setErrors] = useState({});
     const [qualities, setQualities] = useState({});
     const [professions, setProfessions] = useState();
-    const [data, setData] = useState({
-        name: "",
-        email: "",
-
-        profession: "",
-        sex: "",
-        qualities: ""
-    });
+    const [data, setData] = useState();
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data));
         api.qualities.fetchAll().then((data) => setQualities(data));
-        setData({
-            name: user.name,
-            email: user.email,
+        api.users.getById(userId).then((data) => {
+            setData({
+                name: data.name,
+                email: data.email,
 
-            profession: user.profession,
-            sex: user.sex,
-            qualities: user.qualities
+                profession: data.profession,
+                sex: data.sex,
+                qualities: data.qualities
+            });
         });
     }, []);
+
+    useEffect(() => {
+        validate();
+    }, [data]);
+    const validateScheme = yup.object().shape({
+        email: yup
+            .string()
+            .required("Электронная почта обязательна для заполнения")
+            .email("Email введен некорректно")
+    });
+
+    const validate = () => {
+        // const errors = validator(data, validatorConfig);
+        validateScheme
+            .validate(data)
+            .then(() => setErrors({}))
+            .catch((err) => setErrors({ [err.path]: err.message }));
+        // setErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        // const isValid = validate();
+
         // if (!isValid) return;
 
-        const formatArray = data.qualities.map((q) => ({
-            _id: q.value,
-            name: q.label,
-            color: "success"
-        }));
-
-        api.users.update(userId, { ...data, qualities: formatArray });
+        api.users.update(userId, data);
         history.push(`/users/`);
     };
 
     const handleChange = (target) => {
-        setData((prevState) => ({
-            ...prevState,
-            [target.name]: target.value
-        }));
+        console.log("target", target);
+        if (target.name === "qualities") {
+            console.log("HAHA", target.name);
+            const arrToDefault = target.value.map((q) => ({
+                _id: q.value,
+                name: q.label,
+                color: qualities[
+                    Object.keys(qualities).filter(
+                        (key) => qualities[key]._id === q.value
+                    )
+                ].color
+            }));
+            setData((prevState) => ({
+                ...prevState,
+                [target.name]: arrToDefault
+            }));
+        }
+        if (target.name !== "qualities") {
+            setData((prevState) => ({
+                ...prevState,
+                [target.name]:
+                    target.name === "profession"
+                        ? professions[
+                              Object.keys(professions).find(
+                                  (profession) =>
+                                      professions[profession]._id ===
+                                      target.value
+                              )
+                          ]
+                        : target.value
+            }));
+        }
     };
 
-    if (user) {
+    if (data) {
         return (
             <>
                 <div className="container mt-5">
@@ -79,14 +113,14 @@ const UserPageEdit = ({ userId }) => {
                                     name="email"
                                     value={data.email}
                                     onChange={handleChange}
-                                    // error={errors.email}
+                                    error={errors.email}
                                 />
                                 <SelectField
                                     options={professions}
                                     defaultOption="Choose..."
                                     // error={errors.profession}
 
-                                    value={data.profession}
+                                    value={data.profession._id}
                                     label="Выбер свою профессию"
                                     onChange={handleChange}
                                 />
@@ -128,6 +162,5 @@ const UserPageEdit = ({ userId }) => {
 export default UserPageEdit;
 
 UserPageEdit.propTypes = {
-    userId: PropTypes.string,
-    user: PropTypes.object
+    userId: PropTypes.string
 };
