@@ -7,10 +7,11 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import * as yup from "yup";
+import Loader from "../../common/Loader";
 
 const UserPageEdit = ({ userId }) => {
     const history = useHistory();
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState();
     const [qualities, setQualities] = useState({});
     const [professions, setProfessions] = useState();
     const [data, setData] = useState();
@@ -46,16 +47,15 @@ const UserPageEdit = ({ userId }) => {
             .then(() => setErrors({}))
             .catch((err) => setErrors({ [err.path]: err.message }));
         // setErrors(errors);
-        return Object.keys(errors).length === 0;
+        // return Object.keys(errors).length === 0;
     };
-
     const handleSubmit = (evt) => {
         evt.preventDefault();
 
         // if (!isValid) return;
 
         api.users.update(userId, data);
-        history.push(`/users/`);
+        history.push(`/users/${userId}`);
     };
 
     const handleChange = (target) => {
@@ -99,7 +99,7 @@ const UserPageEdit = ({ userId }) => {
                 <div className="container mt-5">
                     <div className="row">
                         <div className="col-md-6 offset-md-3 shadow p-4">
-                            <form onSubmit={handleSubmit}>
+                            <form>
                                 <TextField
                                     label="Имя"
                                     type="text"
@@ -142,12 +142,26 @@ const UserPageEdit = ({ userId }) => {
                                     onChange={handleChange}
                                     name="qualities"
                                 />
-                                <button
-                                    // disabled={!isValid}
-                                    className="btn btn-primary w-100 mx-auto m-2"
-                                >
-                                    Обновить
-                                </button>
+                                <div className="d-flex justify-content-between">
+                                    {" "}
+                                    <button
+                                        className="btn btn-primary flex-fill"
+                                        onClick={() =>
+                                            history.push(`/users/${userId}`)
+                                        }
+                                    >
+                                        <i className="bi bi-arrow-left"></i>
+                                        Назад
+                                    </button>
+                                    <div className="flex-fill" />
+                                    <button
+                                        // disabled={!isValid}
+                                        className="btn btn-primary flex-fill"
+                                        onClick={handleSubmit}
+                                    >
+                                        Обновить
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -156,7 +170,7 @@ const UserPageEdit = ({ userId }) => {
         );
     }
 
-    return "Загрузка..";
+    return <Loader />;
 };
 
 export default UserPageEdit;

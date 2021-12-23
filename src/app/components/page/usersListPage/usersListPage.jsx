@@ -8,6 +8,7 @@ import SearchStatus from "../../ui/searchStatus";
 import _ from "lodash";
 import UserTable from "../../ui/usersTable";
 import SearcBar from "../../common/searchBar";
+import Loader from "../../common/Loader";
 
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -124,7 +125,7 @@ const UsersListPage = () => {
             </div>
         );
     }
-    return "loading...";
+    return <Loader />;
 };
 UsersListPage.propTypes = {
     users: PropTypes.array
